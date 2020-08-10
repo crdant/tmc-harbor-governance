@@ -41,4 +41,16 @@ steps:
    ytt -f config/harbor -f values/harbor.yml > work/harbor.yml --data-value subdomain=$SUBDOMAIN
    helm install feasible-macaque bitnami/harbor -f secrets/harbor.yml -f work/harbor.yml
    ```
+## Assumptions
 
+1. You want to use a Let's Encrypt certificate.
+2. Your cluster is accessible from the Internet.
+3. The registry is for lab and demonstration purposes only.
+
+## Dependencies
+
+* `kubectl`
+* `helm`
+* `ytt` from [k14s](https://k14s.io)
+
+If you're on a Mac you can use the `brew bundle` to install these dependencies.
