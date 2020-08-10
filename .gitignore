@@ -1,0 +1,10 @@
+secrets/*
+!secrets/*.enc
+!secrets/README.md
+work/*
+!work/README.md
+state
+.DS_Store
+.terraform
+terraform.tfstate
+terraform.tfstate*.backup
