@@ -1,0 +1,118 @@
+#@ load("@ytt:data", "data")
+## Init containers parameters:
+## volumePermissions: Change the owner and group of the persistent volume mountpoint to runAsUser:fsGroup values from the securityContext section.
+##
+volumePermissions:
+  enabled: true
+
+## Service parameters
+##
+service:
+  ## K8s service type
+  ## Allowed values are "Ingress", "ClusterIP", "NodePort" or "LoadBalancer"
+  ##
+  type: ClusterIP
+  ## TLS parameters
+  ##
+  tls:
+    ## Enable TLS
+    ## Note: When type is "Ingress" and TLS is disabled, the port must be included
+    ## in the command when pulling/pushing images.
+    ## ref: https://github.com/goharbor/harbor/issues/5291
+    ##
+    enabled: true
+    
+    ## Existing secret name containing your own TLS certificates.
+    ## The secret contains keys named:
+    ## "tls.crt" - the certificate (required)
+    ## "tls.key" - the private key (required)
+    ## "ca.crt" - the certificate of CA (optional)
+    ## Self-signed TLS certificates will be used otherwise.
+    ##
+    existingSecret: feasible-macaque-registry-ingress
+    
+    ## By default, the Notary service will use the same certificate described above.
+    ## Fill the name of secret if you want to use a separated on for Notary.
+    ##
+    notaryExistingSecret: feasible-macaque-notary-ingress
+   
+## Ingress parameters
+##
+ingress:
+  enabled: true
+  
+  ## The list of hostnames to be covered with this ingress record
+  ##
+  hosts:
+    core: #@ "registry.{}".format(data.values.subdomain)
+    notary: #@ "notary.{}".format(data.values.subdomain)
+    
+  ## Set to the type of ingress controller if it has specific requirements.
+  ## leave as `default` for most ingress controllers.
+  ## set to `gce` if using the GCE ingress controller
+  ## set to `ncp` if using the NCP (NSX-T Container Plugin) ingress controller
+  ##
+  controller: contour
+  ## Ingress annotations done as key:value pairs
+  ## For a full list of possible ingress annotations, please see
+  ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/annotations.md
+  ##
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    ingress.kubernetes.io/ssl-redirect: "true"
+    ingress.kubernetes.io/proxy-body-size: "0"
+
+## The external URL for Harbor core service. It is used to
+## 1) populate the docker/helm commands showed on portal
+## 2) populate the token service URL returned to docker/notary client
+##
+## Format: protocol://domain[:port]. Usually:
+## 1) if "service.type" is "ingress", the "domain" should be
+## the value of "service.ingress.hosts.core"
+## 2) if "service.type" is "clusterIP", the "domain" should be
+## the value of "service.clusterIP.name"
+## 3) if "service.type" is "nodePort", the "domain" should be
+## the IP address of k8s node. If Harbor is deployed behind the proxy,
+## set it as the URL of proxy
+##
+externalURL: #@ "https://registry.{}".format(data.values.subdomain)
+
+## The persistence is enabled by default and a default StorageClass
+## is needed in the k8s cluster to provision volumes dynamicly.
+## Specify another StorageClass in the "storageClass" or set "existingClaim"
+## if you have already existing persistent volumes to use
+##
+## For storing images and charts, you can also use "azure", "gcs", "s3",
+## "swift" or "oss". Set it in the "imageChartStorage" section
+##
+persistence:
+  enabled: false
+  ## Resource Policy
+  ## Setting it to "keep" to avoid removing PVCs during a helm delete operation
+  ##
+  resourcePolicy: ""
+
+  ## Define which storage backend is used for registry and chartmuseum to store
+  ## images and charts.
+  ## ref: https://github.com/docker/distribution/blob/master/docs/configuration.md#storage
+  ##
+  imageChartStorage:
+    ## Specify the type of storage. Allowed values are [ filesystem | azure | gcs | s3 | swift | oss ]
+    ##
+    type: filesystem
+
+## The log level used for Harbor services. Allowed values are [ fatal | error | warn | info | debug | trace ]
+##
+logLevel: info
+
+## Option to force users to specify passwords (core.secret, harborAdminPassword, and secretKey). That is required for 'helm upgrade' to work properly.
+## If it is not forced, random values will be generated.
+##
+forcePassword: true
+
+## PostgreSQL chart configuration
+## ref: https://github.com/bitnami/charts/blob/master/bitnami/postgresql/values.yaml
+##
+postgresql:
+  enabled: true

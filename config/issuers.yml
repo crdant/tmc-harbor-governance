@@ -1,0 +1,33 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging
+  namespace: cert-manager
+spec:
+  acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: #@ data.values.email
+    privateKeySecretRef:
+      name: letsencrypt-credentials
+    solvers:
+    - http01:
+        ingress:
+          class: contour
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-production
+  namespace: cert-manager
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: #@ data.values.email
+    privateKeySecretRef:
+      name: letsencrypt-credentials
+    solvers:
+    - http01:
+        ingress:
+          class: contour
