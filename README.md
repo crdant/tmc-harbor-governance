@@ -34,7 +34,7 @@ steps:
      secret:
    postgresql:
      password:
-  ```
+   ``` 
 
 3. Install Harbor with Helm 
 
