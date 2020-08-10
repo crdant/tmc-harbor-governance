@@ -17,14 +17,13 @@ steps:
    ```helm install great-sunfish jetpack/cert-manager -f values/cert-manager.yml```
 
 2. Install a Let's Encrypt issuer so you're registry will have a legitimate
-   certificate (it's insanely easier that way). 
+   certificate (it's easier that way). 
 
    ```
    ytt -f config/letsencrypt --data-value email=$EMAIL | kubectl -f - i
    ```
 
-2. Create a secrets file for Harbor using the following 
-   template 
+2. Create a secrets file `secrets/harbor.yml` using the following template:
 
    ```
    harborAdminPassword:
