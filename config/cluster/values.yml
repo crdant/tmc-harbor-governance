@@ -1,0 +1,14 @@
+#@data/values
+---
+name:
+description: Cluster for Harbor governance demonstration
+annotations:
+labels:
+
+cluster_group:
+account_credential:
+
+aws:
+  region: us-east-2
+  machine_type: m5.large
+  ssh_key_name: 

@@ -12,21 +12,41 @@ available and a cluster attached to TMC. If you don't have
 a registry set up, you can set one up using the following 
 steps:
 
-1. Install cert-manager into your cluster using Helm
+1. Create a new cluster group in TMC.
+   ```
+   ytt -f config/group --data-value name=$CLUSTER_GROUP
+   tmc clustergroup create -f work/clustergroup.yaml
+   ```
+   _N.B._: You have to use the extension `yaml` here rather than `yml` or `tmc` rejects the file
+
+2. Create a new cluster with TMC.
+   ```
+   ytt -f config/cluster --data-value name=$CLUSTER_NAME --data-value cluster_group=$CLUSTER_GROUP --data-value account_credential=$TMC_AWS_CREDENTIAL_NAME --data-value aws.ssh_key_name=$AWS_SSH_KEY_NAME > work/cluster.yaml
+   tmc cluster create -f work/cluster.yaml
+   ```
+   _N.B._: You have to use the extension `yaml` here rather than `yml` or `tmc` rejects the file
+
+3. Download the kubeconfig for the cluster and use it for the rest of the setup.
+   ```
+   tmc cluster provisionedcluster kubeconfig get-admin $CLUSTER_NAME > secrets/${CLUSTER_NAME}.kubeconfig
+   export KUBECONFIG=$(pwd)/secrets/${CLUSTER_NAME}.kubeconfig
+   ```
+
+4. Install cert-manager into your cluster using Helm
 
    ```
    kubectl create namespace cert-manager
-   helm install -n cert-manager great-sunfish jetpack/cert-manager -f values/cert-manager.yml'
+   helm install -n cert-manager great-sunfish jetstack/cert-manager -f values/cert-manager.yml
    ```
 
-2. Install a Let's Encrypt issuer so your registry will have a legitimate
+5. Install a Let's Encrypt issuer so your registry will have a legitimate
    certificate (it's easier that way). 
 
    ```
    ytt -f config/letsencrypt --data-value email=$EMAIL | kubectl -f - i
    ```
 
-2. Create a secrets file `secrets/harbor.yml` using the following template:
+6. Create a secrets file `secrets/harbor.yml` using the following template:
 
    ```
    harborAdminPassword:
@@ -38,7 +58,7 @@ steps:
      password:
    ``` 
 
-3. Install Harbor with Helm 
+7. Install Harbor with Helm 
 
    ```
    ytt -f config/harbor -f values/harbor.yml --data-value subdomain=$SUBDOMAIN --ignore-unknown-comments > work/harbor.yml 
