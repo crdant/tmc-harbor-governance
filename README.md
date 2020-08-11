@@ -14,9 +14,12 @@ steps:
 
 1. Install cert-manager into your cluster using Helm
 
-   ```helm install great-sunfish jetpack/cert-manager -f values/cert-manager.yml```
+   ```
+   kubectl create namespace cert-manager
+   helm install -n cert-manager great-sunfish jetpack/cert-manager -f values/cert-manager.yml'
+   ```
 
-2. Install a Let's Encrypt issuer so you're registry will have a legitimate
+2. Install a Let's Encrypt issuer so your registry will have a legitimate
    certificate (it's easier that way). 
 
    ```
@@ -38,8 +41,9 @@ steps:
 3. Install Harbor with Helm 
 
    ```
-   ytt -f config/harbor -f values/harbor.yml > work/harbor.yml --data-value subdomain=$SUBDOMAIN
-   helm install feasible-macaque bitnami/harbor -f secrets/harbor.yml -f work/harbor.yml
+   ytt -f config/harbor -f values/harbor.yml --data-value subdomain=$SUBDOMAIN --ignore-unknown-comments > work/harbor.yml 
+   kubectl create namespace registry
+   helm install -n registry feasible-macaque bitnami/harbor -f secrets/harbor.yml -f work/harbor.yml
    ```
 ## Assumptions
 
