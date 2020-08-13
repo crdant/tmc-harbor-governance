@@ -21,7 +21,8 @@ steps:
 
 2. Create a new cluster with TMC.
    ```
-   ytt -f config/cluster --data-value name=$CLUSTER_NAME --data-value cluster_group=$CLUSTER_GROUP --data-value account_credential=$TMC_AWS_CREDENTIAL_NAME --data-value aws.ssh_key_name=$AWS_SSH_KEY_NAME > work/cluster.yaml
+   ytt -f config/cluster --data-value name=$CLUSTER_NAME --data-value cluster_group=$CLUSTER_GROUP \
+      --data-value account_credential=$TMC_AWS_CREDENTIAL_NAME --data-value aws.ssh_key_name=$AWS_SSH_KEY_NAME > work/cluster.yaml
    tmc cluster create -f work/cluster.yaml
    ```
    _N.B._: You have to use the extension `yaml` here rather than `yml` or `tmc` rejects the file
@@ -32,10 +33,30 @@ steps:
    export KUBECONFIG=$(pwd)/secrets/${CLUSTER_NAME}.kubeconfig
    ```
 
+6. Set up TMC workspaces for governing namespaces used for tool, development, staging, and production workloads.
+   ```
+   tmc workspace create -f config/workspaces/tools.yaml
+   tmc workspace create -f config/workspaces/development.yaml
+   tmc workspace create -f config/workspaces/staging.yaml
+   tmc workspace create -f config/workspaces/production.yaml
+   ```
+
+4. Use Contour as an ingress controller.
+   ```
+   ytt -f config/namespaces --data-value namespace=contour --data-value cluster=$CLUSTER_NAME \ 
+      --data-value workspace=$TOOLS_WORKSPACE > work/namespace-contour.yaml
+   tmc cluster namespace create -f work/namespace-contour.yaml
+   # enable a pod security policy for envoy before installing contour
+   kubectl apply -f config/contour/psp.yml
+   kubectl apply -f https://projectcontour.io/quickstart/contour.yaml
+   ```
+
 4. Install cert-manager into your cluster using Helm
 
    ```
-   kubectl create namespace cert-manager
+   ytt -f config/namespaces --data-value namespace=cert-manager --data-value cluster=$CLUSTER_NAME \ 
+      --data-value workspace=$TOOLS_WORKSPACE > work/namespace-cert-manager.contour.yaml
+   tmc cluster namespace create -f work/namespace-cert-manager.yaml
    helm install -n cert-manager great-sunfish jetstack/cert-manager -f values/cert-manager.yml
    ```
 
@@ -44,14 +65,6 @@ steps:
 
    ```
    ytt -f config/letsencrypt --data-value email=$EMAIL | kubectl apply -f -
-   ```
-
-6. Set up TMC workspaces for governing namespaces used for tool, development, staging, and production workloads.
-   ```
-   tmc workspace create -f config/workspaces/tools.yaml
-   tmc workspace create -f config/workspaces/development.yaml
-   tmc workspace create -f config/workspaces/staging.yaml
-   tmc workspace create -f config/workspaces/production.yaml
    ```
 
 7. Create a secrets file `secrets/harbor.yml` using the following template:
@@ -69,8 +82,11 @@ steps:
 8. Install Harbor with Helm 
 
    ```
+   ytt -f config/namespaces --data-value namespace=registry --data-value cluster=$CLUSTER_NAME \ 
+      --data-value workspace=$TOOLS_WORKSPACE > work/namespace-registry.yaml
+   tmc cluster namespace create -f work/namespace-registry.yaml
+
    ytt -f config/harbor -f values/harbor.yml --data-value subdomain=$SUBDOMAIN --ignore-unknown-comments > work/harbor.yml 
-   kubectl create namespace registry
    helm install -n registry feasible-macaque bitnami/harbor -f secrets/harbor.yml -f work/harbor.yml
    ```
 
