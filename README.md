@@ -69,8 +69,10 @@ steps:
 8. Install Harbor with Helm 
 
    ```
+   ytt -f config/namespaces/registry.yaml -f config/namespaces/values.yml --data-value cluster=$CLUSTER_NAME --data-value workspace=$TOOLS_WORKSPACE > work/namespace-registry.yaml
+   tmc cluster namespace create -f work/namespace-registry.yaml
+
    ytt -f config/harbor -f values/harbor.yml --data-value subdomain=$SUBDOMAIN --ignore-unknown-comments > work/harbor.yml 
-   kubectl create namespace registry
    helm install -n registry feasible-macaque bitnami/harbor -f secrets/harbor.yml -f work/harbor.yml
    ```
 
