@@ -43,9 +43,8 @@ steps:
 
 4. Use Contour as an ingress controller.
    ```
-   ytt -f config/namespaces --data-value namespace=contour --data-value cluster=$CLUSTER_NAME \ 
-      --data-value workspace=$TOOLS_WORKSPACE > work/namespace-contour.yaml
-   tmc cluster namespace create -f work/namespace-contour.yaml
+   tmc cluster namespace create -t default --name contour --cluster-name $CLUSTER_NAME --workspace $TOOLS_WORKSPACE
+
    # enable a pod security policy for envoy before installing contour
    kubectl apply -f config/contour/psp.yml
    kubectl apply -f https://projectcontour.io/quickstart/contour.yaml
@@ -54,9 +53,7 @@ steps:
 4. Install cert-manager into your cluster using Helm
 
    ```
-   ytt -f config/namespaces --data-value namespace=cert-manager --data-value cluster=$CLUSTER_NAME \ 
-      --data-value workspace=$TOOLS_WORKSPACE > work/namespace-cert-manager.contour.yaml
-   tmc cluster namespace create -f work/namespace-cert-manager.yaml
+   tmc cluster namespace create -t default --name cert-manager --cluster-name $CLUSTER_NAME --workspace $TOOLS_WORKSPACE
    helm install -n cert-manager great-sunfish jetstack/cert-manager -f values/cert-manager.yml
    ```
 
@@ -82,9 +79,7 @@ steps:
 8. Install Harbor with Helm 
 
    ```
-   ytt -f config/namespaces/registry.yaml -f config/namespaces/values.yml --data-value cluster=$CLUSTER_NAME --data-value workspace=$TOOLS_WORKSPACE > work/namespace-registry.yaml
-   ytt -f config/namespaces --data-value namespace=registry --data-value cluster=$CLUSTER_NAME \ 
-      --data-value workspace=$TOOLS_WORKSPACE > work/namespace-registry.yaml
+   tmc cluster namespace create -t default --name registry --cluster-name $CLUSTER_NAME --workspace $TOOLS_WORKSPACE
    tmc cluster namespace create -f work/namespace-registry.yaml
 
    ytt -f config/harbor -f values/harbor.yml --data-value subdomain=$SUBDOMAIN --ignore-unknown-comments > work/harbor.yml 
