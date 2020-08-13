@@ -35,10 +35,20 @@ steps:
 
 6. Set up TMC workspaces for governing namespaces used for tool, development, staging, and production workloads.
    ```
-   tmc workspace create -f config/workspaces/tools.yaml
-   tmc workspace create -f config/workspaces/development.yaml
-   tmc workspace create -f config/workspaces/staging.yaml
-   tmc workspace create -f config/workspaces/production.yaml
+   tmc workspace create -t default --name $TOOLS_WORKSPACE
+   tmc workspace create -t default --name $DEVELOPMENT_WORKSPACE
+   tmc workspace create -t default --name $STAGING_WORKSPACE
+   tmc workspace create -t default --name $PRODUCTION_WORKSPACE
+   ```
+
+   also create notional workspaces in each workspace
+
+   ```
+   tmc cluster namespace create -t default --name development --cluster-name $CLUSTER_NAME --workspace $DEVELOPMENT_WORKSPACE
+   tmc cluster namespace create -t default --name crdant --cluster-name $CLUSTER_NAME --workspace $DEVELOPMENT_WORKSPACE
+   tmc cluster namespace create -t default --name test --cluster-name $CLUSTER_NAME --workspace $STAGING_WORKSPACE
+   tmc cluster namespace create -t default --name staging --cluster-name $CLUSTER_NAME --workspace $STAGING_WORKSPACE
+   tmc cluster namespace create -t default --name production --cluster-name $CLUSTER_NAME --workspace $PRODUCTION_WORKSPACE
    ```
 
 4. Use Contour as an ingress controller.
