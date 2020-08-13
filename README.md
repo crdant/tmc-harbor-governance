@@ -43,10 +43,18 @@ steps:
    certificate (it's easier that way). 
 
    ```
-   ytt -f config/letsencrypt --data-value email=$EMAIL | kubectl -f - i
+   ytt -f config/letsencrypt --data-value email=$EMAIL | kubectl apply -f -
    ```
 
-6. Create a secrets file `secrets/harbor.yml` using the following template:
+6. Set up TMC workspaces for governing namespaces used for tool, development, staging, and production workloads.
+   ```
+   tmc workspace create -f config/workspaces/tools.yaml
+   tmc workspace create -f config/workspaces/development.yaml
+   tmc workspace create -f config/workspaces/staging.yaml
+   tmc workspace create -f config/workspaces/production.yaml
+   ```
+
+7. Create a secrets file `secrets/harbor.yml` using the following template:
 
    ```
    harborAdminPassword:
@@ -58,13 +66,14 @@ steps:
      password:
    ``` 
 
-7. Install Harbor with Helm 
+8. Install Harbor with Helm 
 
    ```
    ytt -f config/harbor -f values/harbor.yml --data-value subdomain=$SUBDOMAIN --ignore-unknown-comments > work/harbor.yml 
    kubectl create namespace registry
    helm install -n registry feasible-macaque bitnami/harbor -f secrets/harbor.yml -f work/harbor.yml
    ```
+
 ## Assumptions
 
 1. You want to use a Let's Encrypt certificate.
