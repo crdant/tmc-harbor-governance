@@ -53,11 +53,13 @@ ingress:
   ## set to `ncp` if using the NCP (NSX-T Container Plugin) ingress controller
   ##
   controller: contour
+  
   ## Ingress annotations done as key:value pairs
   ## For a full list of possible ingress annotations, please see
   ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/annotations.md
   ##
   annotations:
+    kubernetes.io/ingress.class: contour
     kubernetes.io/tls-acme: "true"
     cert-manager.io/cluster-issuer: letsencrypt-production
     ingress.kubernetes.io/ssl-redirect: "true"
