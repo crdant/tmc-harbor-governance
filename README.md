@@ -96,6 +96,15 @@ steps:
    helm install -n registry feasible-macaque bitnami/harbor -f secrets/harbor.yml -f work/harbor.yml
    ```
  
+9. Prepare Harbor by creating a project and configuring a replication
+   endpoint for the Google Container Registry.
+
+   ```
+   export HARBOR_PASSWORD=$(kubectl get -n registry secret feasible-macaque-harbor-core-envvars -o jsonpath='{.data.HARBOR_ADMIN_PASSWORD}' | base64 -d)
+   curl --user "admin:${HARBOR_PASSWORD}" -X POST https://registry.${SUBDOMAIN}/api/v2.0/projects -H "Content-type: application/json" --data @config/project/project.json
+   curl --user "admin:${HARBOR_PASSWORD}" -X POST https://registry.${SUBDOMAIN}/api/v2.0/registries -H "Content-type: application/json" --data @config/replication/gcr.json
+   ```
+
 9. Create image registry policies for production and staging workspaces
 
    ```
