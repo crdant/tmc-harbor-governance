@@ -39,7 +39,7 @@ steps, but are easy to adapt if you made adjustments.
 
 ### Steps
 
-4. Before you start, make sure you have a shell open that 
+1. Before you start, make sure you have a shell open that 
    has access to the cluster. If you're in the shell used
    for the [basic setup](docs/basic-environment-setup.md)
    you used for the basic setup you should be all set. If
