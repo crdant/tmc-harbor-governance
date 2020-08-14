@@ -95,6 +95,15 @@ steps:
    ytt -f config/harbor -f values/harbor.yml --data-value subdomain=$SUBDOMAIN --ignore-unknown-comments > work/harbor.yml 
    helm install -n registry feasible-macaque bitnami/harbor -f secrets/harbor.yml -f work/harbor.yml
    ```
+ 
+9. Create image registry policies for production and staging workspaces
+
+   ```
+   tmc workspace image-policy create -t default-allow-registry --workspace-name $PRODUCTION_WORKSPACE \
+     --name private-registry --registry-domains registry.$SUBDOMAIN
+   tmc workspace image-policy create -t default-allow-registry --workspace-name $STAGING_WORKSPACE \
+     --name trusted-registries --registry-domains registry.$SUBDOMAIN,registry.pivotal.io,gcr.io
+   ```
 
 ## Assumptions
 
