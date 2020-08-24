@@ -21,18 +21,13 @@ If you're on a Mac you can use the `brew bundle` to install these dependencies.
 
 1. Create a new cluster group in TMC.
    ```
-   ytt -f config/group --data-value name=$CLUSTER_GROUP
-   tmc clustergroup create -f work/clustergroup.yaml
+   tmc clustergroup create -t default --name ${CLUSTER_GROUP} 
    ```
-   _N.B._: You have to use the extension `yaml` here rather than `yml` or `tmc` rejects the file
 
 2. Create a new cluster with TMC.
    ```
-   ytt -f config/cluster --data-value name=$CLUSTER_NAME --data-value cluster_group=$CLUSTER_GROUP \
-      --data-value account_credential=$TMC_AWS_CREDENTIAL_NAME --data-value aws.ssh_key_name=$AWS_SSH_KEY_NAME > work/cluster.yaml
-   tmc cluster create -f work/cluster.yaml
+   tmc cluster create -t default --name ${CLUSTER_NAME} --group ${CLUSTER_GROUP} --account-name ${TMC_AWS_CREDENTIAL_NAME} --ssh-key-name ${AWS_SSH_KEY_NAME}
    ```
-   _N.B._: You have to use the extension `yaml` here rather than `yml` or `tmc` rejects the file
 
 3. Download the kubeconfig for the cluster and use it for the rest of the setup.
    ```
