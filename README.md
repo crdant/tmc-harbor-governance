@@ -32,10 +32,10 @@ layered governance model to enforce these constraints.
 
 To run the demonstration, you need one or more Kubernetes
 clusters, access to Tanzu Mission Control, and an installed
-Harbor registry. You can [setup a basic environment]
-(docs/basic-environment-setup.md) using a single cluster in
-about 30 minutes. The instructions assume you followed those
-steps, but are easy to adapt if you made adjustments.
+Harbor registry. You can [setup a basic environment](docs/basic-environment-setup.md)
+using a single cluster in about 30 minutes. The instructions
+assume you followed those steps, but are easy to adapt if
+you made adjustments.
 
 ### Steps
 
