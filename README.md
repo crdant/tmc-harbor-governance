@@ -32,10 +32,12 @@ layered governance model to enforce these constraints.
 
 To run the demonstration, you need one or more Kubernetes
 clusters, access to Tanzu Mission Control, and an installed
-Harbor registry. You can [setup a basic environment](docs/basic-environment-setup.md)
-using a single cluster in about 30 minutes. The instructions
-assume you followed those steps, but are easy to adapt if
-you made adjustments.
+Harbor registry. You can [setup a single cluster demo 
+environment](docs/single-cluster.md) in about 30 minutes, or 
+a more realistic [multiple cluster demo 
+environment](docs/multi-cluster.md) with a bit more time. 
+The instructions assume you followed those steps,
+but are easy to adapt if you made adjustments.
 
 ### Steps
 
@@ -132,7 +134,6 @@ you made adjustments.
    You should also run `kubectl describe -n production pod kuard`
    to show the error message.
 
-
 10. Jump back over to Harbor and click on the project configuration
     to show how it's configured to "Prevent vulnerable images from
     running." Show how you can adjust the level, and set it to
@@ -151,3 +152,11 @@ you made adjustments.
     kuard   0/1     ImagePullBackOff   0          46s
     kuard   1/1     Running            0          49s
     ```
+
+## Notes
+
+1. The cluster(s) that TMC creates will be open to the Internet
+   since we're using default options. This is also required by
+   the way that we configure Let's Encrypt.
+2. We are creating a simple installation of Harbor registry that
+   is not production ready.
