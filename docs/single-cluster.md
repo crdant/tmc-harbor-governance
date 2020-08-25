@@ -37,7 +37,8 @@ If you're on a Mac you can use the `brew bundle` to install these dependencies.
 
 4. Use Contour as an ingress controller.
    ```
-   tmc cluster namespace create -t default --name contour --cluster-name $CLUSTER_NAME --workspace $TOOLS_WORKSPACE
+   tmc workspace create -t default --name ${TOOLS_WORKSPACE}
+   tmc cluster namespace create -t default --name projectcontour --cluster-name $CLUSTER_NAME --workspace $TOOLS_WORKSPACE
 
    # enable a pod security policy for envoy before installing contour
    kubectl apply -f config/contour/psp.yml

@@ -1,10 +1,10 @@
 # Prepare TMC for the Demo
 
-1. Set up TMC workspaces for governing namespaces used for tool, development, 
-   staging, and production workloads.
+1. Set up TMC workspaces for governing namespaces used for development, 
+   staging, and production workloads. We set up the workspace for our
+   tools when configuring the tools cluster.
    
    ```
-   tmc workspace create -t default --name ${TOOLS_WORKSPACE}
    tmc workspace create -t default --name ${DEVELOPMENT_WORKSPACE}
    tmc workspace create -t default --name ${STAGING_WORKSPACE}
    tmc workspace create -t default --name ${PRODUCTION_WORKSPACE}
@@ -16,11 +16,11 @@
    production clusters.
 
    ```
-   tmc cluster namespace create -t default --name development --cluster-name ${DEVELOPMENT_CLUSTER} --workspace ${DEVELOPMENT_WORKSPACE}
-   tmc cluster namespace create -t default --name crdant --cluster-name ${DEVELOPMENT_CLUSTER} --workspace $DEVELOPMENT_WORKSPACE
-   tmc cluster namespace create -t default --name test --cluster-name ${TEST_CLUSTER} --workspace ${STAGING_WORKSPACE}
-   tmc cluster namespace create -t default --name staging --cluster-name ${TEST_CLUSTER} --workspace ${STAGING_WORKSPACE}
-   tmc cluster namespace create -t default --name production --cluster-name ${PRODUCTION_CLUSTER} --workspace ${PRODUCTION_WORKSPACE}
+   tmc cluster namespace create -t default --name development --cluster-name ${DEVELOPMENT_CLUSTER} --workspace-name ${DEVELOPMENT_WORKSPACE}
+   tmc cluster namespace create -t default --name crdant --cluster-name ${DEVELOPMENT_CLUSTER} --workspace-name $DEVELOPMENT_WORKSPACE
+   tmc cluster namespace create -t default --name test --cluster-name ${STAGING_CLUSTER} --workspace-name ${STAGING_WORKSPACE}
+   tmc cluster namespace create -t default --name staging --cluster-name ${STAGING_CLUSTER} --workspace-name ${STAGING_WORKSPACE}
+   tmc cluster namespace create -t default --name production --cluster-name ${PRODUCTION_CLUSTER} --workspace-name ${PRODUCTION_WORKSPACE}
    ```
 
 3. Create image registry policies for production and staging workspaces
