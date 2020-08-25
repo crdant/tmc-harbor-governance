@@ -72,3 +72,7 @@ If you're on a Mac you can use the `brew bundle` to install these dependencies.
    ytt -f config/letsencrypt --data-value email=${EMAIL} | kubectl apply --context ${TOOLS_CONTEXT} -f -
    ```
 
+## Next Steps
+
+After creating the cluster, you need to [prepare TMC](./prepare-tmc.md) 
+and then [install and configure Harbor](./harbor-setup.md).
