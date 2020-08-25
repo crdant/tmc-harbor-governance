@@ -4,11 +4,6 @@ The simplest way to set up the demo environment is to use a
 single Kubernetes cluster that TMC creates for you. Following
 these steps should have you ready to go in about half an hour.
 
-## Assumptions
-
-1. Your cluster is accessible from the Internet.
-2. The registry is for lab and demonstration purposes only.
-
 ## Dependencies
 
 * `kubectl`

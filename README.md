@@ -134,7 +134,6 @@ but are easy to adapt if you made adjustments.
    You should also run `kubectl describe -n production pod kuard`
    to show the error message.
 
-
 10. Jump back over to Harbor and click on the project configuration
     to show how it's configured to "Prevent vulnerable images from
     running." Show how you can adjust the level, and set it to
@@ -153,3 +152,11 @@ but are easy to adapt if you made adjustments.
     kuard   0/1     ImagePullBackOff   0          46s
     kuard   1/1     Running            0          49s
     ```
+
+## Notes
+
+1. The cluster(s) that TMC creates will be open to the Internet
+   since we're using default options. This is also required by
+   the way that we configure Let's Encrypt.
+2. We are creating a simple installation of Harbor registry that
+   is not production ready.
