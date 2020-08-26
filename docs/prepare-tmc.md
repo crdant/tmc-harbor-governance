@@ -16,10 +16,10 @@
    production clusters.
 
    ```
-   tmc cluster namespace create -t default --name development --cluster-name ${DEVELOPMENT_CLUSTER} --workspace-name ${DEVELOPMENT_WORKSPACE}
-   tmc cluster namespace create -t default --name crdant --cluster-name ${DEVELOPMENT_CLUSTER} --workspace-name $DEVELOPMENT_WORKSPACE
-   tmc cluster namespace create -t default --name test --cluster-name ${STAGING_CLUSTER} --workspace-name ${STAGING_WORKSPACE}
-   tmc cluster namespace create -t default --name staging --cluster-name ${STAGING_CLUSTER} --workspace-name ${STAGING_WORKSPACE}
+   tmc cluster namespace create -t default --name development --cluster-name ${PREPROD_CLUSTER} --workspace-name ${DEVELOPMENT_WORKSPACE}
+   tmc cluster namespace create -t default --name crdant --cluster-name ${PREPROD_CLUSTER} --workspace-name ${DEVELOPMENT_WORKSPACE}
+   tmc cluster namespace create -t default --name test --cluster-name ${PREPROD_CLUSTER} --workspace-name ${STAGING_WORKSPACE}
+   tmc cluster namespace create -t default --name staging --cluster-name ${PREPROD_CLUSTER} --workspace-name ${STAGING_WORKSPACE}
    tmc cluster namespace create -t default --name production --cluster-name ${PRODUCTION_CLUSTER} --workspace-name ${PRODUCTION_WORKSPACE}
    ```
 
@@ -27,8 +27,8 @@
 
    ```
    tmc workspace image-policy create -t default-allow-registry --workspace-name $PRODUCTION_WORKSPACE \
-     --name private-registry --registry-domains registry.$SUBDOMAIN
+     --name private-registry --registry-domains registry.${SUBDOMAIN}
    tmc workspace image-policy create -t default-allow-registry --workspace-name $STAGING_WORKSPACE \
-     --name trusted-registries --registry-domains registry.$SUBDOMAIN,registry.pivotal.io,gcr.io
+     --name trusted-registries --registry-domains registry.${SUBDOMAIN},registry.pivotal.io,gcr.io
    ```
 
