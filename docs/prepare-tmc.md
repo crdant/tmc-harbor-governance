@@ -26,9 +26,9 @@
 3. Create image registry policies for production and staging workspaces
 
    ```
-   tmc workspace image-policy create -t default-allow-registry --workspace-name $PRODUCTION_WORKSPACE \
+   tmc workspace image-policy create -t default-allow-registry --workspace-name ${PRODUCTION_WORKSPACE} \
      --name private-registry --registry-domains registry.${SUBDOMAIN}
-   tmc workspace image-policy create -t default-allow-registry --workspace-name $STAGING_WORKSPACE \
+   tmc workspace image-policy create -t default-allow-registry --workspace-name ${STAGING_WORKSPACE} \
      --name trusted-registries --registry-domains registry.${SUBDOMAIN},registry.pivotal.io,gcr.io
    ```
 
